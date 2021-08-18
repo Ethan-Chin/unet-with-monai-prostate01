@@ -354,16 +354,16 @@ def unit_model(expert_id: int, param_device):
     # label and model output in the last batch
     # here we draw the 3D output as GIF format along Depth
     # axis, at every validation epoch
-    val_tensorboard_image_handler = TensorBoardImageHandler(
-        log_dir=log_dir,
-        batch_transform=lambda batch: (batch[0], batch[1]),
-        output_transform=lambda output: output[0],
-        global_iter_transform=lambda x: trainer.state.epoch,
-    )
-    evaluator.add_event_handler(
-        event_name=ignite.engine.Events.EPOCH_COMPLETED,
-        handler=val_tensorboard_image_handler,
-    )
+    # val_tensorboard_image_handler = TensorBoardImageHandler(
+    #     log_dir=log_dir,
+    #     batch_transform=lambda batch: (batch[0], batch[1]),
+    #     output_transform=lambda output: output[0],
+    #     global_iter_transform=lambda x: trainer.state.epoch,
+    # )
+    # evaluator.add_event_handler(
+    #     event_name=ignite.engine.Events.EPOCH_COMPLETED,
+    #     handler=val_tensorboard_image_handler,
+    # )
     print("Evaluator is ready!")
     print("Now we start to train:")
     print("**" * 10)
