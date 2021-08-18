@@ -32,7 +32,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
- 
+
 import glob
 import logging
 import os
@@ -44,10 +44,10 @@ import sys
 # import numpy as np
 # from monai.config import print_config
 from monai.data import (
-    ArrayDataset, 
+    ArrayDataset,
     # create_test_image_3d, 
     decollate_batch,
-    )
+)
 from monai.handlers import (
     MeanDice,
     StatsHandler,
@@ -76,9 +76,8 @@ import ignite
 import torch
 
 
-def unit_model(expert_id:int, param_device):
-
-    #print_config()
+def unit_model(expert_id: int, param_device):
+    # print_config()
     print(f"**********Now we are training for the expert {expert_id:02d}**********")
     print()
     # [markdown]
@@ -112,7 +111,6 @@ def unit_model(expert_id:int, param_device):
     # print(os.listdir(training_dir)[:10])
     # print(os.listdir(validation_dir)[:10])
 
-
     #
     # for i in range(40):
     #     im, seg = create_test_image_3d(128, 128, 128, num_seg_classes=1)
@@ -122,7 +120,6 @@ def unit_model(expert_id:int, param_device):
 
     #     n = nib.Nifti1Image(seg, np.eye(4))
     #     nib.save(n, os.path.join(root_dir, f"seg{i}.nii.gz"))
-
 
     images_train = sorted(glob.glob(os.path.join(training_dir, "case*_image.nii.gz")))
     segs_train = sorted(glob.glob(os.path.join(training_dir, f"case*_task01_seg{expert_id:02d}.nii.gz")))
@@ -280,8 +277,8 @@ def unit_model(expert_id:int, param_device):
             LoadImage(image_only=True),
             ScaleIntensity(),
             Transpose((2, 0, 1)),
-            #AddChannel(),
-            #Resize((640, 640)),
+            # AddChannel(),
+            # Resize((640, 640)),
             CenterSpatialCrop((640, 640)),
             EnsureType(),
         ]
@@ -290,14 +287,12 @@ def unit_model(expert_id:int, param_device):
         [
             LoadImage(image_only=True),
             Transpose((2, 0, 1)),
-            #AddChannel(),
-            #Resize((640, 640)),
+            # AddChannel(),
+            # Resize((640, 640)),
             CenterSpatialCrop((640, 640)),
             EnsureType(),
         ]
     )
-
-
 
     ds_val = ArrayDataset(images_val, imtrans_val, segs_val, segtrans_val)
     loader_val = torch.utils.data.DataLoader(
@@ -310,24 +305,23 @@ def unit_model(expert_id:int, param_device):
         break
     print()
 
-
     @trainer.on(
         ignite.engine.Events.EPOCH_COMPLETED(every=validation_every_n_epochs)
     )
     def run_validation(engine):
         evaluator.run(loader_val)
 
-
     ###############################################################
     early_stopper = ignite.handlers.EarlyStopping(
         patience=20, score_function=stopping_fn_from_metric(metric_name), trainer=trainer, cumulative_delta=True
     )
     evaluator.add_event_handler(
-        event_name= ignite.engine.Events.EPOCH_COMPLETED, handler=early_stopper
+        event_name=ignite.engine.Events.EPOCH_COMPLETED, handler=early_stopper
     )
 
     checkpoint_handler = ignite.handlers.ModelCheckpoint(
-        log_dir, "net", n_saved=1, require_empty=False, score_function=stopping_fn_from_metric(metric_name), score_name=metric_name
+        log_dir, "net", n_saved=1, require_empty=False, score_function=stopping_fn_from_metric(metric_name),
+        score_name=metric_name
     )
     evaluator.add_event_handler(
         event_name=ignite.engine.Events.EPOCH_COMPLETED,
@@ -372,7 +366,7 @@ def unit_model(expert_id:int, param_device):
     )
     print("Evaluator is ready!")
     print("Now we start to train:")
-    print("**"*10)
+    print("**" * 10)
 
     # [markdown]
     # ## Run training loop
@@ -382,7 +376,7 @@ def unit_model(expert_id:int, param_device):
 
     max_epochs = 120
     state = trainer.run(loader_train, max_epochs)
-    print("*"*10, "FINISHED!", "*"*10)
+    print("*" * 10, "FINISHED!", "*" * 10)
     print()
     print()
 
@@ -404,5 +398,10 @@ def unit_model(expert_id:int, param_device):
     #
     # if directory is None:
     #     shutil.rmtree(root_dir)
+
+
 if __name__ == "__main__":
-    unit_model(1)
+    os.chdir("../")
+    exp_id = int(sys.argv[1])
+    device = torch.device(sys.argv[2])
+    unit_model(exp_id, device)
