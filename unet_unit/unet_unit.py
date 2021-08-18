@@ -76,7 +76,7 @@ import ignite
 import torch
 
 
-def unit_model(expert_id:int):
+def unit_model(expert_id:int, param_device):
 
     #print_config()
     print(f"**********Now we are training for the expert {expert_id:02d}**********")
@@ -91,8 +91,8 @@ def unit_model(expert_id:int):
     #
     # directory = os.environ.get("/content/drive/MyDrive/unet-with-monai/dataset/prostate_gz")
     # root_dir = tempfile.mkdtemp() if directory is None else directory
-    directory = "/content/drive/MyDrive/unet-with-monai/dataset/prostate"
-    root_dir = "/content/drive/MyDrive/unet-with-monai/dataset/prostate"
+    directory = "./dataset/prostate"
+    root_dir = "./dataset/prostate"
     print(directory)
     print()
 
@@ -187,7 +187,7 @@ def unit_model(expert_id:int):
 
     #
     # Create UNet, DiceLoss and Adam optimizer
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = param_device
     net = UNet(
         dimensions=2,
         in_channels=1,
