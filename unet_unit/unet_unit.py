@@ -89,9 +89,12 @@ def unit_model(expert_id: int, param_device):
 
     #
     # directory = os.environ.get("/content/drive/MyDrive/unet-with-monai/dataset/prostate_gz")
-    # root_dir = tempfile.mkdtemp() if directory is None else directory
+    # data_dir = tempfile.mkdtemp() if directory is None else directory
     directory = "./dataset/prostate"
-    root_dir = "./dataset/prostate"
+    data_dir = "./dataset/prostate"
+    if not os.path.exists("./exp_new"):
+        os.mkdir("./exp_new")
+    root_dir = "./exp_new"
     print(directory)
     print()
 
@@ -106,8 +109,8 @@ def unit_model(expert_id: int, param_device):
     # First generate the proper file tree
 
     #
-    training_dir = os.path.join(root_dir, 'Training')
-    validation_dir = os.path.join(root_dir, 'Validation')
+    training_dir = os.path.join(data_dir, 'Training')
+    validation_dir = os.path.join(data_dir, 'Validation')
     # print(os.listdir(training_dir)[:10])
     # print(os.listdir(validation_dir)[:10])
 
@@ -116,10 +119,10 @@ def unit_model(expert_id: int, param_device):
     #     im, seg = create_test_image_3d(128, 128, 128, num_seg_classes=1)
 
     #     n = nib.Nifti1Image(im, np.eye(4))
-    #     nib.save(n, os.path.join(root_dir, f"im{i}.nii.gz"))
+    #     nib.save(n, os.path.join(data_dir, f"im{i}.nii.gz"))
 
     #     n = nib.Nifti1Image(seg, np.eye(4))
-    #     nib.save(n, os.path.join(root_dir, f"seg{i}.nii.gz"))
+    #     nib.save(n, os.path.join(data_dir, f"seg{i}.nii.gz"))
 
     images_train = sorted(glob.glob(os.path.join(training_dir, "case*_image.nii.gz")))
     segs_train = sorted(glob.glob(os.path.join(training_dir, f"case*_task01_seg{expert_id:02d}.nii.gz")))
@@ -136,8 +139,8 @@ def unit_model(expert_id: int, param_device):
     print("--------------------")
     print()
 
-    # images = sorted(glob.glob(os.path.join(root_dir, "im*.nii.gz")))
-    # segs = sorted(glob.glob(os.path.join(root_dir, "seg*.nii.gz")))
+    # images = sorted(glob.glob(os.path.join(data_dir, "im*.nii.gz")))
+    # segs = sorted(glob.glob(os.path.join(data_dir, "seg*.nii.gz")))
 
     # [markdown]
     # ## Setup transforms, dataset
@@ -397,7 +400,7 @@ def unit_model(expert_id: int, param_device):
 
     #
     # if directory is None:
-    #     shutil.rmtree(root_dir)
+    #     shutil.rmtree(data_dir)
 
 
 if __name__ == "__main__":
