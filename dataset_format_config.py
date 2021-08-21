@@ -1,13 +1,20 @@
 # %%
 import numpy as np
 
+# %%
+training = np.arange(1, 40+1)
+validation = np.arange(41, 46+1)
+test = np.arange(47, 55+1)
+
+
+
+# %%
 def dataset_format_config():
     config = {
-        "training_num" : 40,
-        "validation_num" : 6,
-        "test_num" : 9,
+        "training" : training,
+        "validation" : validation,
+        "test" : test,
         "shuffle_id" : False,
-        "directly_mode" : True
     }
     np.save("./dataset_format_config.npy", config)
     print("Configure Saved!")
