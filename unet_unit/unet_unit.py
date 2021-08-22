@@ -15,7 +15,7 @@ from monai.handlers import (
     TensorBoardImageHandler,
     TensorBoardStatsHandler,
 )
-from monai.losses import DiceLoss
+from monai.losses import DiceLoss, DiceCELoss
 from monai.networks.nets import UNet
 from monai.transforms import (
     Activations,
@@ -88,7 +88,7 @@ def unit_model(expert_id: int, param_device):
 
 
     ds_train = ArrayDataset(images_train, imtrans_train, segs_train, segtrans_train)
-    loader_train = torch.utils.data.DataLoader(ds_train, batch_size=4, shuffle=True, num_workers=4, pin_memory=torch.cuda.is_available())
+    loader_train = torch.utils.data.DataLoader(ds_train, batch_size=4, shuffle=True, num_workers=4)
 
     print("Dataset for training is loaded! the shape we may see:")
     for im, seg in loader_train:
@@ -106,7 +106,7 @@ def unit_model(expert_id: int, param_device):
         num_res_units=2,
     ).to(device)
 
-    loss = DiceLoss(include_background=False, sigmoid=True)
+    loss = DiceCELoss(sigmoid=True)
     lr = 1e-3
     opt = torch.optim.Adam(net.parameters(), lr)
 
@@ -133,7 +133,7 @@ def unit_model(expert_id: int, param_device):
 
     metric_name = "Mean_Dice"
 
-    val_metrics = {metric_name: MeanDice(include_background=False)}
+    val_metrics = {metric_name: MeanDice()}
     post_pred = Compose(
         [EnsureType(), Activations(sigmoid=True), AsDiscrete(threshold_values=True)]
     )
@@ -179,7 +179,7 @@ def unit_model(expert_id: int, param_device):
 
     ds_val = ArrayDataset(images_val, imtrans_val, segs_val, segtrans_val)
     loader_val = torch.utils.data.DataLoader(
-        ds_val, batch_size=len(images_val), num_workers=2, pin_memory=torch.cuda.is_available()
+        ds_val, batch_size=len(images_val), num_workers=2
     )
 
     print("Dataset for validation is loaded! the first shape we may see:")

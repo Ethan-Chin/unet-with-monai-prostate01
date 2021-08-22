@@ -1,7 +1,6 @@
 # %%
 import numpy as np
 
-# %%
 training = np.arange(1, 40+1)
 validation = np.arange(41, 46+1)
 test = np.arange(47, 55+1)
@@ -21,4 +20,5 @@ def dataset_format_config():
 
 if __name__ == "__main__":
     dataset_format_config()
+
 # %%
