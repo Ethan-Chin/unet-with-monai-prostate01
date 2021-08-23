@@ -1,4 +1,7 @@
- - shuffle or not关系不大，即使不shuffle，也难以学到特征
+ - shuffle or not没有显著差异，即使不shuffle，也难以学到特征
  - 条状表现不佳
  - 更换validation set 和 training set对结果影响不大
- - 更换test set有一定的影响，也不是很大；总之final分数集中于0.85-0.88的区间内
+ - 更换test set有一定的影响(主要是特别的case会降低score；普通的case的score大多都能在0.9), final分数集中于0.85-0.90的区间内
+ - 多个网络的作用主要不是学习不同expert，而是降低final output的variance来提高表现；
+ - 多个label相当于给label主动加一个noise，以增加不同subnet之间的diversity；
+ - 不同label之间的由于uncertainty引发的差异很小，分割的性能要达到0.95以上时，对这种差异的准确calibration才有意义；否则dice score的提升可以说完全取决于普通的segmentation task的质量
