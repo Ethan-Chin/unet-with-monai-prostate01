@@ -1,0 +1,4 @@
+ - shuffle or not关系不大，即使不shuffle，也难以学到特征
+ - 条状表现不佳
+ - 更换validation set 和 training set对结果影响不大
+ - 更换test set有一定的影响，也不是很大；总之final分数集中于0.85-0.88的区间内
