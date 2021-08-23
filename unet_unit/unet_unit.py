@@ -50,8 +50,7 @@ def unit_model(expert_id: int, param_device):
             casename = segs[i].split('/')[-2]
             j = i
             while not (casename in imgs[j]):
-                imgs.pop(j)
-                j += 1             
+                imgs.pop(j)            
         print(f"Fixed!: img num: {len(imgs)}, segs_num: {len(segs)}")
 
 

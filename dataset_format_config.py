@@ -1,9 +1,9 @@
 # %%
 import numpy as np
 
-training = np.arange(1, 40+1)
-validation = np.arange(41, 46+1)
-test = np.arange(47, 55+1)
+training = np.arange(1, 42+1)
+validation = np.arange(43, 48+1)
+test = np.arange(49, 55+1)
 
 
 
