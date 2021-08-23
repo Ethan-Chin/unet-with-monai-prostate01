@@ -1,7 +1,6 @@
 import glob
 import logging
 import os
-
 import sys
 
 from monai.data import (
@@ -45,6 +44,16 @@ def unit_model(expert_id: int, param_device):
 
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
+    def handle_setmatch(imgs, segs):
+        print(f"Training set mismatch!: img num: {len(imgs)}, segs_num: {len(segs)}")
+        for i in range(len(segs)):
+            casename = segs[i].split('/')[-2]
+            j = i
+            while not (casename in imgs[j]):
+                imgs.pop(j)
+                j += 1             
+        print(f"Fixed!: img num: {len(imgs)}, segs_num: {len(segs)}")
+
 
     training_dir = os.path.join(data_dir, 'Training')
     validation_dir = os.path.join(data_dir, 'Validation')
@@ -52,9 +61,23 @@ def unit_model(expert_id: int, param_device):
 
     images_train = sorted(glob.glob(os.path.join(training_dir, "case*", "image.nii.gz")))
     segs_train = sorted(glob.glob(os.path.join(training_dir, "case*", f"task01_seg{expert_id:02d}.nii.gz")))
+    if len(images_train) != len(segs_train):
+        handle_setmatch(images_train, segs_train)
+
+
+
+
+
+
 
     images_val = sorted(glob.glob(os.path.join(validation_dir, "case*", "image.nii.gz")))
     segs_val = sorted(glob.glob(os.path.join(validation_dir, "case*", f"task01_seg{expert_id:02d}.nii.gz")))
+    if len(images_val) != len(segs_val):
+        handle_setmatch(images_val, segs_val)
+
+
+
+
     print("Dataset seted! The first 5 training cases and 3 validation cases:")
     for im, seg in zip(images_train[:5], segs_train[:5]):
         print(im, seg)
